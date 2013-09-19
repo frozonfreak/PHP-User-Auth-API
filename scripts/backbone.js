@@ -61,6 +61,7 @@ userAuth.controller('appController', function($scope, authSession, sharedValues)
     };
     $scope.registration = function(data, status){
         console.log(data);
+        console.log(unixCryptTD(data, '12345678900'));
         authSession.registerUser(sharedValues.getUserDetails()).success($scope.displaySuccess).error($scope.displayError);
     }
     $scope.registeruser = function(){

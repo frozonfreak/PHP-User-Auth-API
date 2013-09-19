@@ -36,11 +36,11 @@
 		        }
 		    break;
 		    case 'getSalt':
-		    	//if($_SESSION){
+		    	if(session_id()){
     				$salt = $keyGen->generateClientSalt();
     				$_SESSION['salt']=$salt;
     				echo json_encode(array("status" => 1,"data" => $salt));
-    			//}
+    			}
 		    break;
 		}
 	}
