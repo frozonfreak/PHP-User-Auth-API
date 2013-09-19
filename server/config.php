@@ -24,6 +24,11 @@ else{
 define("BLOCK_GET", true);
 define("BLOCK_NO_JSON", false);
 
+//Timeout for new registration
+//Time in seconds
+define("CLIENT_SALT_LENGTH", 10);
+define("CLIENT_SALT_CHARACTERS","0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+define("TIMEOUT_REGISTRATION", 600);
 /*System Definitions*/
 define("Version","0.0.1");
 

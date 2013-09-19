@@ -1,23 +1,25 @@
 <?php
-//Initial gateway for all calls into Server
+	session_start();
+
 	//Include Classes
 	require 'Config.php';
 	require 'User.php';
+	require 'KeyGenerator.php';
 
 	//Display error if the request is GET
 	if(BLOCK_GET && $_SERVER['REQUEST_METHOD'] == 'GET')
-		die(json_encode(array("status" => 0,"message"=>  "GET request not supported")));
+		exit(json_encode(array("status" => 0,"message"=>  "GET request not supported")));
 	
 	$receivedData = json_decode(file_get_contents("php://input"));
 
 	//Display error if no JSON Object found
-	if(BLOCK_NO_JSON && !is_object(json_decode($receivedData)))
-		die(json_encode(array("status" => 0,"message"=>  "No JSON object found")));
+	if(BLOCK_NO_JSON && !is_object($receivedData))
+		exit(json_encode(array("status" => 0,"message"=>  "No JSON object found")));
 
 	
 	//Create Objects
 	$user     			= new User();
-
+	$keyGen             = new KeyGenerator();
 	
 	if(isset($receivedData->{"type"})){
 		$response = '';
@@ -30,12 +32,19 @@
 		        	$response = $user->registerUser($userDetails,$clientID);
 		        }
 		        else{
-		        	die(json_encode(array("status" => 0,"message"=> "All fields needs to be set")));
+		        	exit(json_encode(array("status" => 0,"message"=> "All fields needs to be set")));
 		        }
+		    break;
+		    case 'getSalt':
+		    	//if($_SESSION){
+    				$salt = $keyGen->generateClientSalt();
+    				$_SESSION['salt']=$salt;
+    				echo json_encode(array("status" => 1,"data" => $salt));
+    			//}
 		    break;
 		}
 	}
 	else {
-	    die(json_encode(array("status" => 0,"message"=> "All fields needs to be set")));
+	    exit(json_encode(array("status" => 0,"message"=> "All fields needs to be set")));
 	}
 ?>

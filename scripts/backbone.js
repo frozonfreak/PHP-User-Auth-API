@@ -39,6 +39,12 @@ userAuth.factory('authSession', function($http){
                 user        : userDetails,
                 timeStamp   : Math.floor((new Date()).getTime() / 1000)
         	});
+        },
+        getSalt: function(){
+            return $http.post('server/Services.php',{
+                type        : 'getSalt',
+                timeStamp   : Math.floor((new Date()).getTime() / 1000)
+            });
         }
     }
 });
@@ -53,7 +59,12 @@ userAuth.controller('appController', function($scope, authSession, sharedValues)
         $scope.output = JSON.stringify(data);
         console.log($scope.output);
     };
-    $scope.registeruser = function(){
+    $scope.registration = function(data, status){
+        console.log(data);
         authSession.registerUser(sharedValues.getUserDetails()).success($scope.displaySuccess).error($scope.displayError);
+    }
+    $scope.registeruser = function(){
+        authSession.getSalt().success($scope.registration).error($scope.displayError);
+        
     };
 });
