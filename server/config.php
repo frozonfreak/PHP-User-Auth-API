@@ -5,7 +5,7 @@
 
 //Set Debug for Localhost 
 if ( $_SERVER["SERVER_ADDR"] == '127.0.0.1' || $_SERVER["SERVER_ADDR"] == '::1') {
-	define("DB_STRING","mysql:host=localhost;dbname=db_reservation");
+	define("DB_STRING","mysql:host=localhost;dbname=db_user_auth");
 	define("DB_HOST", "localhost");
 	define("DB_USER", "root");
 	define("DB_PASSWORD", "root");
@@ -13,7 +13,7 @@ if ( $_SERVER["SERVER_ADDR"] == '127.0.0.1' || $_SERVER["SERVER_ADDR"] == '::1')
 	define("DEBUG",true);
 }
 else{
-	define("DB_STRING","mysql:host=localhost;dbname=db_reservation");
+	define("DB_STRING","mysql:host=localhost;dbname=db_user_auth");
 	define("DB_HOST", "localhost");
 	define("DB_USER", "root");
 	define("DB_PASSWORD", "root");
@@ -21,6 +21,8 @@ else{
 	define("DEBUG",false);
 }
 
+define("BLOCK_GET", true);
+define("BLOCK_NO_JSON", false);
 
 /*System Definitions*/
 define("Version","0.0.1");
