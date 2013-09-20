@@ -27,17 +27,25 @@
 					echo json_encode(array("status" => 1,"message"=> "User Registered"));
 				else
 					echo json_encode(array("status" => 0,"message"=> "User Registration Failed"));
-				print_r($hash);
 			}
 			else
 				exit(json_encode(array("status" => 0,"message"=> "User Email Exists")));
 		}
 
 		public function checkPass($password, $hash){
-			if ( crypt($password, $hash) == $hash )
-				return 1;
+			return(crypt($password, $hash) == $hash? true: false);
+		}
+
+		public function userLogin($userID, $password){
+			$db_user 	= new DB_User();
+			if(!$db_user->checkUserEmailExists($userID)){
+				if(this->checkPass($password, $$db_user->getPass($userID)))
+					print_r("Password Matched");
+				else
+					print_r("Password Mismatch");
+			}
 			else
-				return 0;
+				exit(json_encode(array("status" => 0,"message"=> "User Does not Exists")));
 		}
 	}
 

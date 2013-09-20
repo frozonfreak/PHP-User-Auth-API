@@ -24,6 +24,19 @@
 				exit(json_encode(array("status" => 0,"message"=> "Unable to query database")));
 			}
 		}
+		public function getPass($userID){
+			try{
+				$db = new PDO(DB_STRING, DB_USER, DB_PASSWORD);
+				$stmt = $db->prepare('SELECT password_hash FROM user WHERE contact_email=?');
+				$stmt->execute(array($userID));
+				$row = $stmt->fetch();
+				return $row[0];
+
+			}
+			catch(Exception $e){
+				exit(json_encode(array("status" => 0,"message"=> "Unable to query database")));
+			}
+		}
 		public function insertUserToDB($userDetails, $hash, $salt,  $roleid){
 			try{
 				$db = new PDO(DB_STRING, DB_USER, DB_PASSWORD);

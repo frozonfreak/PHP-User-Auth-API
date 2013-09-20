@@ -28,8 +28,8 @@
 		        if(isset($receivedData->{"user"}) && isset($receivedData->{"password"})){
 		        	if($_SESSION['salt']){
 		        		$password  = $keyGen->decodePass($receivedData->{"password"}, $_SESSION['salt']);
-		        		$response = $user->registerUser($receivedData->{"user"}, $password, CUSTOMER);
 		        		session_destroy();
+		        		$response = $user->registerUser($receivedData->{"user"}, $password, CUSTOMER);
 		        	}
 		        	else
 		        		exit(json_encode(array("status" => 0,"message"=> "Need to receive salt")));
@@ -43,8 +43,23 @@
 		        if(isset($receivedData->{"user"}) && isset($receivedData->{"password"})){
 		        	if($_SESSION['salt']){
 		        		$password  = $keyGen->decodePass($receivedData->{"password"}, $_SESSION['salt']);
-		        		$response = $user->registerUser($receivedData->{"user"}, $password, HDRESSER);
 		        		session_destroy();
+		        		$response = $user->registerUser($receivedData->{"user"}, $password, HDRESSER);
+		        	}
+		        	else
+		        		exit(json_encode(array("status" => 0,"message"=> "Need to receive salt")));
+		        	//$response = $user->registerUser($userDetails,$clientID);
+		        }
+		        else{
+		        	exit(json_encode(array("status" => 0,"message"=> "All fields needs to be set")));
+		        }
+		    break;
+		    case 'hairDresserLogin':
+		    	if(isset($receivedData->{"userID"}) && isset($receivedData->{"password"})){
+		        	if($_SESSION['salt']){
+		        		$password  = $keyGen->decodePass($receivedData->{"password"}, $_SESSION['salt']);
+		        		session_destroy();
+		        		$response = $user->userLogin($receivedData->{"userID"}, $password, HDRESSER);
 		        	}
 		        	else
 		        		exit(json_encode(array("status" => 0,"message"=> "Need to receive salt")));
