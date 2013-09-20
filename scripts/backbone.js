@@ -36,13 +36,21 @@ userAuth.service('sharedValues', function () {
 
 userAuth.factory('authSession', function($http){
     return {
-       	registerUser: function(userDetails, password) {
+       	registerCustomer: function(userDetails, password) {
         	return $http.post('server/Services.php',{
-        		type		: 'registerUser',
+        		type		: 'registerCustomer',
                 user        : userDetails,
                 password     : password,
                 timeStamp   : Math.floor((new Date()).getTime() / 1000)
         	});
+        },
+        registerHairDresser: function(userDetails, password) {
+            return $http.post('server/Services.php',{
+                type        : 'registerHairDresser',
+                user        : userDetails,
+                password     : password,
+                timeStamp   : Math.floor((new Date()).getTime() / 1000)
+            });
         },
         getSalt: function(){
             return $http.post('server/Services.php',{
@@ -63,13 +71,19 @@ userAuth.controller('appController', function($scope, authSession, sharedValues)
         $scope.output = JSON.stringify(data);
         console.log($scope.output);
     };
-    $scope.registration = function(data, status){
+    $scope.customerRegsistration = function(data, status){
         console.log(data);
         if(data['status'])
-            authSession.registerUser(sharedValues.getUserDetails(), sharedValues.getUserPassword()).success($scope.displaySuccess).error($scope.displayError);
-    }
-    $scope.registeruser = function(){
-        authSession.getSalt().success($scope.registration).error($scope.displayError);
-        
+            authSession.registerCustomer(sharedValues.getUserDetails(), sharedValues.getUserPassword()).success($scope.displaySuccess).error($scope.displayError);
     };
+    $scope.hairdresserRegistration = function(data, status){
+        if(data['status'])
+            authSession.registerHairDresser(sharedValues.getUserDetails(), sharedValues.getUserPassword()).success($scope.displaySuccess).error($scope.displayError);
+    };
+    $scope.registerCustomer = function(){
+        authSession.getSalt().success($scope.customerRegsistration).error($scope.displayError);
+    };
+    $scope.registerHairDresser = function(){
+        authSession.getSalt().success($scope.hairdresserRegistration).error($scope.displayError);
+    }
 });

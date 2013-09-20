@@ -29,8 +29,17 @@ define("BLOCK_NO_JSON", false);
 define("CLIENT_SALT_LENGTH", 10);
 define("CLIENT_SALT_CHARACTERS","0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
+//DB Storage SALT
 define("SALT_LENGTH", 10);
 define("TIMEOUT_REGISTRATION", 600);
+
+//User ROLES
+define("CUSTOMER", 'Customer');
+define("HDRESSER", 'HairDresser');
+define("ADMIN", 'Admin');
+define("SUPERADMIN", 'SuperAdmin');
+
+
 /*System Definitions*/
 define("Version","0.0.1");
 
