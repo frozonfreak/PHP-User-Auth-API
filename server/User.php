@@ -1,80 +1,41 @@
 <?php
-
+	
 	class User{
 
 		function __construct(){
+			require_once 'KeyGenerator.php';
 			require_once 'Config.php';
+			require_once 'DB_User.php';
 		}
 
 		function __destruct() {
 			 
 		}
-		public function registerUser($userDetails, $clientID){
+		public function registerUser($userDetails, $password){
+			$keyGen     = new KeyGenerator();
+			$db_user 	= new DB_User();
 
-			$res='';
-			include_once 'DB_User.php';
-			include_once 'DB_Location.php';
-			include_once 'DB_Professional.php';
+			//Check if user Exists
+			if($db_user->checkUserEmailExists($userDetails[0]->email)){
 
-			$db_user 		= new DB_User();
-			$db_location 	= new DB_Location();
-			$db_professional = new DB_Professional();
-
-			//Check if user already Exists
-
-			$result = $db_user->checkUserExists($userDetails);
-			if(!$result){
-				$result='';
-				//Get Location ID
-				$result = $db_location->getLocationID($userDetails[0]->preferredLocation);
-				if($result){
-					$locationID = $result[0]['id'];
-					$result='';
-					//Get Professional ID
-					$result = $db_professional->getProfessionalID($userDetails[0]->preferredDresser);
-					//If all data is successfully processed - Then register user
-					print_r($result[0]['id']);
-					if($result){
-						$res = $db_user->registerUser($userDetails, $clientID, $locationID, $result[0]['id']);
-						if($res)
-						    $response = array("status" => 1,
-						                      "message"=> "Registration Succesfull");
-						else
-						    $response = array("status" => 0,
-						                      "message"=> "Error updating to DB");
-					}
-					else{
-						$response = array("status" => 0,
-					                  	"message"=> "Error Retrieving Professional ID");
-					}
-				}
-				else{
-					$response = array("status" => 0,
-					                  "message"=> "Error Retrieving Location ID");
-				}
+				$salt = $keyGen->generateSalt(SALT_LENGTH);
+				$hash = $keyGen->generateHash($password, $salt);
+				if($db_user->insertUserToDB($userDetails, $hash, $salt))
+					echo json_encode(array("status" => 1,"message"=> "User Registered"));
+				else
+					echo json_encode(array("status" => 0,"message"=> "User Registration Failed"));
+				print_r($hash);
 			}
-			else{
-				$response = array("status" => 0,
-					              "message"=> "User Already Exists");
-			}
-
-				echo json_encode($response); 
-		}
-		public function getUserList($clientID){
-			$res='';
-			include_once 'DB_User.php';
-
-			$db_user 		= new DB_User();
-
-			$res = $db_user->getUserList($clientID);
-			$response = array("status" => 1,
-						       "message"=> "Registration Succesfull",
-						       "data" => $res);
-			print_r($res);
-			echo json_encode($response); 
-			
+			else
+				exit(json_encode(array("status" => 0,"message"=> "User Email Exists")));
 		}
 
+		public function checkPass($password, $hash){
+			if ( crypt($password, $hash) == $hash )
+				return 1;
+			else
+				return 0;
+		}
 	}
 
 ?>

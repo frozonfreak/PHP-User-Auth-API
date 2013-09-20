@@ -15,10 +15,10 @@ userAuth.config(function ($routeProvider) {
 userAuth.service('sharedValues', function () {
 
     //User details received from phone
+    var userPassword = '1234567890';
     var userDetails = [{
                             firstName   : 'firstName',  
                             surName     : 'LastName',
-                            password    : 'password',
                             gender      :  'M',
                             contactNo   : '123456789',
                             email       : 'email@email.com'
@@ -26,6 +26,9 @@ userAuth.service('sharedValues', function () {
     return {
             getUserDetails: function(){
                 return userDetails;
+            },
+            getUserPassword: function(){
+                return userPassword;
             }
         };
 });
@@ -33,10 +36,11 @@ userAuth.service('sharedValues', function () {
 
 userAuth.factory('authSession', function($http){
     return {
-       	registerUser: function(userDetails) {
+       	registerUser: function(userDetails, password) {
         	return $http.post('server/Services.php',{
         		type		: 'registerUser',
                 user        : userDetails,
+                password     : password,
                 timeStamp   : Math.floor((new Date()).getTime() / 1000)
         	});
         },
@@ -61,8 +65,8 @@ userAuth.controller('appController', function($scope, authSession, sharedValues)
     };
     $scope.registration = function(data, status){
         console.log(data);
-        console.log(unixCryptTD(data, '12345678900'));
-        authSession.registerUser(sharedValues.getUserDetails()).success($scope.displaySuccess).error($scope.displayError);
+        if(data['status'])
+            authSession.registerUser(sharedValues.getUserDetails(), sharedValues.getUserPassword()).success($scope.displaySuccess).error($scope.displayError);
     }
     $scope.registeruser = function(){
         authSession.getSalt().success($scope.registration).error($scope.displayError);
